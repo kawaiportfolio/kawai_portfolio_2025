@@ -412,7 +412,6 @@ opacity:0;
 }
 
 .img_hp_size {
-  width: 100vw;
   height: auto;
   display: block;
 }
@@ -928,4 +927,5 @@ textarea {
     font-size: 40px;
   }
 }
+
 
