@@ -369,6 +369,7 @@ opacity:0;
 
 .profile_pic {
   width: 35%;
+  height: 100%;
 }
 
 .profile-title {
@@ -927,5 +928,6 @@ textarea {
     font-size: 40px;
   }
 }
+
 
 
