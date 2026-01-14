@@ -30,18 +30,31 @@ $('img').on('inview', function(event, isInView) {
   }
 });
 
-var splash_text = document.getElementById('splash_text');
-var KEY = 'kawai_portfolio_seen';
+function hideSplash(immediate) {
+  const $splash = $("#splash");
+  if (!$splash.length) return;
 
-// ===== loading (short fade) =====
-$(window).on('load', function () {
-  $("#splash").delay(80).fadeOut(250);
+  if (immediate) {
+    $splash.hide();
+  } else {
+    $splash.stop(true, true).delay(80).fadeOut(250);
+  }
+}
+
+// 毎回同じふわっと演出
+$(window).on("load", function () {
+  hideSplash(false);
 });
 
-// 戻る（bfcache）対策：戻った時に残らないように
-window.addEventListener('pageshow', function (e) {
-  if (e.persisted) $("#splash").hide();
+// 戻る/進む（bfcache含む）でも必ず消す
+window.addEventListener("pageshow", function () {
+  hideSplash(true);
 });
+
+// 最終保険：何があっても固まらない
+setTimeout(function () {
+  hideSplash(true);
+}, 2000);
 
 
   //ページ内スクロール
@@ -119,6 +132,7 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
 
 
