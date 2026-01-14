@@ -30,43 +30,54 @@ $('img').on('inview', function(event, isInView) {
   }
 });
 
-// テキストのカウントアップの設定
-var splash_text = document.getElementById('splash_text'); // id名を指定
+var splash_text = document.getElementById('splash_text');
+var KEY = 'kawai_portfolio_seen';
 
-if (!splash_text || !window.ProgressBar) {
-  console.warn('splash_text or ProgressBar is missing');
-
-  // ProgressBarが無い場合でもローディングは消す（真っ白防止）
-  $("#splash").delay(300).fadeOut(600);
-
+// すでにサイト内を一度見ていればスキップ
+if (sessionStorage.getItem(KEY) === '1') {
+  $("#splash").hide();
 } else {
-  var bar = new ProgressBar.Line(splash_text, {//id名を指定
-    strokeWidth: 0,//進捗ゲージの太さ
-    duration: 1500,//時間指定(1000＝1秒)
-    trailWidth: 0,//線の太さ
-    text: {//テキストの形状を直接指定
-      style: {//天地中央に配置
-        position:'absolute',
-        left:'50%',
-        top:'50%',
-        padding:'0',
-        margin:'0',
-        transform:'translate(-50%,-50%)',
-        'font-size':'30px',
-        color:'#333',
-      },
-      autoStyleContainer: false //自動付与のスタイルを切る
-    },
-    step: function(state, bar) {
-      bar.setText(Math.round(bar.value() * 100) + ' %'); //テキストの数値
-    }
-  });
+  // 初回だけ：フラグを立てる（＝このタブ内では以後スキップ）
+  sessionStorage.setItem(KEY, '1');
 
-  // animateは1回だけ（ここで完結）
-  bar.animate(1.0, function () {
-    $("#splash").delay(500).fadeOut(800);
-  });
+  if (!splash_text || !window.ProgressBar) {
+    console.warn('splash_text or ProgressBar is missing');
+    $("#splash").delay(200).fadeOut(500);
+  } else {
+    var bar = new ProgressBar.Line(splash_text, {
+      strokeWidth: 0,
+      duration: 1500,
+      trailWidth: 0,
+      text: {
+        style: {
+          position:'absolute',
+          left:'50%',
+          top:'50%',
+          padding:'0',
+          margin:'0',
+          transform:'translate(-50%,-50%)',
+          'font-size':'30px',
+          color:'#333',
+        },
+        autoStyleContainer: false
+      },
+      step: function(state, bar) {
+        bar.setText(Math.round(bar.value() * 100) + ' %');
+      }
+    });
+
+    $(window).on('load', function () {
+      bar.animate(1.0, function () {
+        $("#splash").delay(500).fadeOut(800);
+      });
+    });
+  }
 }
+
+// 戻る（bfcache）でもスプラッシュが残らないように保険
+window.addEventListener('pageshow', function (e) {
+  if (sessionStorage.getItem(KEY) === '1') $("#splash").hide();
+});
 
   //ページ内スクロール
   var $nav = $(".header");
@@ -143,4 +154,5 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
