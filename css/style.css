@@ -235,6 +235,20 @@ ul.gnav-sp li a {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* 追加：ふわっと消える＆固まり防止 */
+  opacity: 1;
+  transition: opacity 0.16s ease-out;
+  animation: splashOut 0.18s ease-out 0.35s forwards;
+  will-change: opacity;
+}
+
+@keyframes splashOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 #splash_text {
@@ -244,6 +258,7 @@ ul.gnav-sp li a {
   font-size: 30px;
   color: #333;
 }
+
 
 #mv {
   height: 750px;
@@ -937,6 +952,7 @@ textarea {
     font-size: 40px;
   }
 }
+
 
 
 
