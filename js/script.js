@@ -35,6 +35,10 @@ var splash_text = document.getElementById('splash_text'); // id名を指定
 
 if (!splash_text || !window.ProgressBar) {
   console.warn('splash_text or ProgressBar is missing');
+
+  // ProgressBarが無い場合でもローディングは消す（真っ白防止）
+  $("#splash").delay(300).fadeOut(600);
+
 } else {
   var bar = new ProgressBar.Line(splash_text, {//id名を指定
     strokeWidth: 0,//進捗ゲージの太さ
@@ -58,14 +62,11 @@ if (!splash_text || !window.ProgressBar) {
     }
   });
 
-  // これがないと0%のままなので、通常は animate も必要
-  bar.animate(1.0);
+  // animateは1回だけ（ここで完結）
+  bar.animate(1.0, function () {
+    $("#splash").delay(500).fadeOut(800);
+  });
 }
-
-//アニメーションスタート
-bar.animate(1.0, function () {//バーを描画する割合を指定します 1.0 なら100%まで描画します
-	$("#splash").delay(500).fadeOut(800);//アニメーションが終わったら#splashエリアをフェードアウト
-});  
 
   //ページ内スクロール
   var $nav = $(".header");
@@ -142,3 +143,4 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
