@@ -43,15 +43,15 @@ function hideSplash(immediate) {
 
 // 毎回同じふわっと演出
 $(window).on("load", function () {
-  hideSplash(false);
+  $("#splash").stop(true, true).delay(50).fadeOut(200);
 });
 
 // 戻る/進む（bfcache含む）でも必ず消す
 window.addEventListener("pageshow", function () {
-  hideSplash(true);
-});
+  $("#splash").stop(true, true).hide();
+}, { capture: true });
 
-// 最終保険：何があっても固まらない
+// 最終保険
 setTimeout(function () {
   hideSplash(true);
 }, 2000);
@@ -132,6 +132,7 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
 
 
