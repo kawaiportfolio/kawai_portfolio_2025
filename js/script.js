@@ -30,28 +30,37 @@ $('img').on('inview', function(event, isInView) {
   }
 });
 
-//テキストのカウントアップの設定
-var bar = new ProgressBar.Line(splash_text, {//id名を指定
-	strokeWidth: 0,//進捗ゲージの太さ
-	duration: 1500,//時間指定(1000＝1秒)
-	trailWidth: 0,//線の太さ
-	text: {//テキストの形状を直接指定	
-		style: {//天地中央に配置
-			position:'absolute',
-			left:'50%',
-			top:'50%',
-			padding:'0',
-			margin:'0',
-			transform:'translate(-50%,-50%)',
-			'font-size':'30px',
-			color:'#333',
-		},
-		autoStyleContainer: false //自動付与のスタイルを切る
-	},
-	step: function(state, bar) {
-		bar.setText(Math.round(bar.value() * 100) + ' %'); //テキストの数値
-	}
-});
+// テキストのカウントアップの設定
+var splash_text = document.getElementById('splash_text'); // id名を指定
+
+if (!splash_text || !window.ProgressBar) {
+  console.warn('splash_text or ProgressBar is missing');
+} else {
+  var bar = new ProgressBar.Line(splash_text, {//id名を指定
+    strokeWidth: 0,//進捗ゲージの太さ
+    duration: 1500,//時間指定(1000＝1秒)
+    trailWidth: 0,//線の太さ
+    text: {//テキストの形状を直接指定
+      style: {//天地中央に配置
+        position:'absolute',
+        left:'50%',
+        top:'50%',
+        padding:'0',
+        margin:'0',
+        transform:'translate(-50%,-50%)',
+        'font-size':'30px',
+        color:'#333',
+      },
+      autoStyleContainer: false //自動付与のスタイルを切る
+    },
+    step: function(state, bar) {
+      bar.setText(Math.round(bar.value() * 100) + ' %'); //テキストの数値
+    }
+  });
+
+  // これがないと0%のままなので、通常は animate も必要
+  bar.animate(1.0);
+}
 
 //アニメーションスタート
 bar.animate(1.0, function () {//バーを描画する割合を指定します 1.0 なら100%まで描画します
@@ -131,4 +140,5 @@ $('#menu-button').on('click',function(){
 //メニュー内のリンククリックしたとき
 $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
+
 });
