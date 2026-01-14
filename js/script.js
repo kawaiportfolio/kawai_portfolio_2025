@@ -33,51 +33,72 @@ $('img').on('inview', function(event, isInView) {
 var splash_text = document.getElementById('splash_text');
 var KEY = 'kawai_portfolio_seen';
 
-// すでにサイト内を一度見ていればスキップ
-if (sessionStorage.getItem(KEY) === '1') {
-  $("#splash").hide();
-} else {
-  // 初回だけ：フラグを立てる（＝このタブ内では以後スキップ）
+// ===== loading control =====
+(function () {
+
+  var KEY = 'kawai_first_visit';
+  var splash = $("#splash");
+  var splashText = document.getElementById('splash_text');
+
+  function fadeOutSplash(delay) {
+    splash.delay(delay || 0).fadeOut(800);
+  }
+
+  // 2回目以降：ふわっと表示だけ
+  if (sessionStorage.getItem(KEY) === '1') {
+    $(window).on('load', function () {
+      fadeOutSplash(300);
+    });
+    return;
+  }
+
+  // ===== 初回のみ：カウント演出 =====
   sessionStorage.setItem(KEY, '1');
 
-  if (!splash_text || !window.ProgressBar) {
-    console.warn('splash_text or ProgressBar is missing');
-    $("#splash").delay(200).fadeOut(500);
-  } else {
-    var bar = new ProgressBar.Line(splash_text, {
-      strokeWidth: 0,
-      duration: 1500,
-      trailWidth: 0,
-      text: {
-        style: {
-          position:'absolute',
-          left:'50%',
-          top:'50%',
-          padding:'0',
-          margin:'0',
-          transform:'translate(-50%,-50%)',
-          'font-size':'30px',
-          color:'#333',
-        },
-        autoStyleContainer: false
-      },
-      step: function(state, bar) {
-        bar.setText(Math.round(bar.value() * 100) + ' %');
-      }
-    });
-
+  if (!window.ProgressBar || !splashText) {
+    // 念のための保険
     $(window).on('load', function () {
-      bar.animate(1.0, function () {
-        $("#splash").delay(500).fadeOut(800);
-      });
+      fadeOutSplash(300);
     });
+    return;
   }
-}
 
-// 戻る（bfcache）でもスプラッシュが残らないように保険
-window.addEventListener('pageshow', function (e) {
-  if (sessionStorage.getItem(KEY) === '1') $("#splash").hide();
-});
+  var bar = new ProgressBar.Line(splashText, {
+    strokeWidth: 0,
+    duration: 1500,
+    trailWidth: 0,
+    text: {
+      style: {
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontSize: '30px',
+        color: '#333',
+      },
+      autoStyleContainer: false
+    },
+    step: function (state, bar) {
+      bar.setText(Math.round(bar.value() * 100) + ' %');
+    }
+  });
+
+  // URL読み込み完了後にカウント開始
+  $(window).on('load', function () {
+    bar.animate(1.0, function () {
+      fadeOutSplash(500);
+    });
+  });
+
+  // 戻る対策（bfcache）
+  window.addEventListener('pageshow', function () {
+    if (sessionStorage.getItem(KEY) === '1') {
+      splash.hide();
+    }
+  });
+
+})();
+
 
   //ページ内スクロール
   var $nav = $(".header");
@@ -154,5 +175,6 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
 
