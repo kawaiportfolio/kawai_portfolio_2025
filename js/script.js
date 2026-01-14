@@ -33,71 +33,15 @@ $('img').on('inview', function(event, isInView) {
 var splash_text = document.getElementById('splash_text');
 var KEY = 'kawai_portfolio_seen';
 
-// ===== loading control =====
-(function () {
+// ===== loading (short fade) =====
+$(window).on('load', function () {
+  $("#splash").delay(80).fadeOut(250);
+});
 
-  var KEY = 'kawai_first_visit';
-  var splash = $("#splash");
-  var splashText = document.getElementById('splash_text');
-
-  function fadeOutSplash(delay) {
-    splash.delay(delay || 0).fadeOut(800);
-  }
-
-  // 2回目以降：ふわっと表示だけ
-  if (sessionStorage.getItem(KEY) === '1') {
-    $(window).on('load', function () {
-      fadeOutSplash(300);
-    });
-    return;
-  }
-
-  // ===== 初回のみ：カウント演出 =====
-  sessionStorage.setItem(KEY, '1');
-
-  if (!window.ProgressBar || !splashText) {
-    // 念のための保険
-    $(window).on('load', function () {
-      fadeOutSplash(300);
-    });
-    return;
-  }
-
-  var bar = new ProgressBar.Line(splashText, {
-    strokeWidth: 0,
-    duration: 1500,
-    trailWidth: 0,
-    text: {
-      style: {
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        fontSize: '30px',
-        color: '#333',
-      },
-      autoStyleContainer: false
-    },
-    step: function (state, bar) {
-      bar.setText(Math.round(bar.value() * 100) + ' %');
-    }
-  });
-
-  // URL読み込み完了後にカウント開始
-  $(window).on('load', function () {
-    bar.animate(1.0, function () {
-      fadeOutSplash(500);
-    });
-  });
-
-  // 戻る対策（bfcache）
-  window.addEventListener('pageshow', function () {
-    if (sessionStorage.getItem(KEY) === '1') {
-      splash.hide();
-    }
-  });
-
-})();
+// 戻る（bfcache）対策：戻った時に残らないように
+window.addEventListener('pageshow', function (e) {
+  if (e.persisted) $("#splash").hide();
+});
 
 
   //ページ内スクロール
@@ -175,6 +119,7 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
 
 
