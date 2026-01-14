@@ -30,32 +30,22 @@ $('img').on('inview', function(event, isInView) {
   }
 });
 
-function hideSplash(immediate) {
-  const $splash = $("#splash");
-  if (!$splash.length) return;
-
-  if (immediate) {
-    $splash.hide();
-  } else {
-    $splash.stop(true, true).delay(80).fadeOut(250);
-  }
+// ===== splash: 毎回ふわっと & すぐ捌ける=====
+function hideSplashFast() {
+  const splash = document.getElementById("splash");
+  if (!splash) return;
+  splash.classList.add("is-hidden");
 }
 
-// 毎回同じふわっと演出
-$(window).on("load", function () {
-  $("#splash").stop(true, true).delay(50).fadeOut(200);
+window.addEventListener("load", function () {
+  setTimeout(hideSplashFast, 60); // ←待ち時間（短くしたいなら 0〜30）
 });
 
-// 戻る/進む（bfcache含む）でも必ず消す
 window.addEventListener("pageshow", function () {
-  $("#splash").stop(true, true).hide();
+  hideSplashFast(); // 戻る/進むでも即消し
 }, { capture: true });
 
-// 最終保険
-setTimeout(function () {
-  hideSplash(true);
-}, 2000);
-
+setTimeout(hideSplashFast, 1200); // 最終保険
 
   //ページ内スクロール
   var $nav = $(".header");
@@ -132,6 +122,7 @@ $(".gnav-sp a").on("click", function() {
   $('.gnav-sp-wrap').fadeToggle(500);
 
 });
+
 
 
 
